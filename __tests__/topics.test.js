@@ -1,3 +1,4 @@
+
 const request = require("supertest");
 const app = require("../app");
 const db = require("../db/connection");
@@ -13,7 +14,7 @@ describe("News API", () => {
       return request(app)
         .get("/api/notapath")
         .expect(404)
-        .then(({body:{message}}) => {
+        .then(({ body: { message } }) => {
           expect(message).toBe("Invalid API path request");
         });
     });
@@ -38,4 +39,27 @@ describe("News API", () => {
         });
     });
   });
-});
+
+  describe("GET/api/articles", () => {
+    test("responds with a status of 200 and returns an array of objects containing the articles", () => {
+      return request(app)
+        .get("/api/articles")
+        .then(({ body }) => {
+          const { articles } = body;
+          expect(articles.length).toEqual(12);
+          articles.forEach((article) => 
+              expect(article).toMatchObject({
+                author: expect.any(String),
+                title: expect.any(String),
+                article_id: expect.any(Number),
+                topic: expect.any(String),
+                created_at: expect.any(String),
+                votes: expect.any(Number),
+                comment_count: expect.any(String),
+              })
+            );
+          });
+        });
+    });
+  });
+

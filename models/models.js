@@ -7,3 +7,15 @@ exports.selectTopics = () => {
       return result.rows;
     })
 }
+
+exports.selectArticles = () => {
+    return db 
+    .query(`
+    SELECT articles.*, 
+    COUNT(comment_id) AS comment_count FROM articles
+    LEFT JOIN comments ON articles.article_id = comments.article_id
+    GROUP BY articles.article_id`)
+    .then((result) => {
+        return result.rows;
+      })
+}
