@@ -3,7 +3,7 @@ const app = require("../app");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data");
 const seed = require("../db/seeds/seed");
-require('jest-sorted');
+require("jest-sorted");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -81,6 +81,26 @@ describe("News API", () => {
               comment_count: expect.any(String),
             })
           );
+        });
+    });
+  });
+
+  describe("GET/api/articles/:article_id", () => {
+    test("responds with a status of 200 and returns an array containing properties corresponding to the queried article_id", () => {
+      return request(app)
+        .get(`/api/articles/1`)
+        .then(({ body }) => {
+          const { article } = body;
+
+          expect(article).toMatchObject({
+            author: expect.any(String),
+            title: expect.any(String),
+            article_id: 1,
+            topic: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+          });
         });
     });
   });
