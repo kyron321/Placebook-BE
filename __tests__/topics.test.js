@@ -26,7 +26,6 @@ describe("News API", () => {
         .expect(200)
         .then(({ body }) => {
           const { topics } = body;
-          expect(topics).toBeInstanceOf(Array);
           expect(topics.length).toEqual(3);
           topics.forEach((topic) => {
             expect(topic).toEqual(
