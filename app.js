@@ -8,7 +8,7 @@ const {
   getTopics,
   getArticles,
   getArticlesByArticleID,
-} = require("./controllers/controllers.snacks");
+} = require("./controllers/controllers.app");
 const app = express();
 app.use(express.json());
 
