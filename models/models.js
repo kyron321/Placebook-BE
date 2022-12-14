@@ -28,7 +28,9 @@ exports.selectArticlesByID = (article_id) => {
       FROM articles
       LEFT JOIN comments ON comments.article_id = articles.article_id
       GROUP BY articles.article_id
-      HAVING articles.article_id=$1`, [article_id])
+      HAVING articles.article_id=$1`,
+      [article_id]
+    )
     .then((result) => {
       return result.rows[0];
     });

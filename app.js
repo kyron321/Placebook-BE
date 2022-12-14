@@ -1,5 +1,14 @@
 const express = require("express");
-const { getTopics, pathInvalid, getArticles, getArticlesByArticleID } = require("./controllers/controllers");
+const {
+  handle500errors,
+  handle404errors,
+
+} = require("./controllers/controllers.errors");
+const {
+  getTopics,
+  getArticles,
+  getArticlesByArticleID,
+} = require("./controllers/controllers.snacks");
 const app = express();
 app.use(express.json());
 
@@ -7,13 +16,9 @@ app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);
 
-app.get("/api/articles/:article_id",getArticlesByArticleID)
+app.get("/api/articles/:article_id", getArticlesByArticleID);
 
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send("Server Error!");
-});
-
-app.all("*", pathInvalid);
+app.all("*",handle404errors);
+app.use(handle500errors);
 
 module.exports = app;
