@@ -2,7 +2,8 @@ const express = require("express");
 const {
   handle500errors,
   handle404errors,
-
+  handleCustomErrors,
+  handlePsqlErrors
 } = require("./controllers/controllers.errors");
 const {
   getTopics,
@@ -18,7 +19,9 @@ app.get("/api/articles", getArticles);
 
 app.get("/api/articles/:article_id", getArticlesByArticleID);
 
-app.all("*",handle404errors);
+app.all("/*",handle404errors);
+app.use(handleCustomErrors)
+app.use(handlePsqlErrors)
 app.use(handle500errors);
 
 module.exports = app;

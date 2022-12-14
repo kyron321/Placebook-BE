@@ -22,16 +22,16 @@ exports.selectArticles = () => {
 };
 
 exports.selectArticlesByID = (article_id) => {
-  return db
-    .query(
-      `SELECT articles.*, COUNT(comments.article_id) AS comment_count
-      FROM articles
-      LEFT JOIN comments ON comments.article_id = articles.article_id
-      GROUP BY articles.article_id
-      HAVING articles.article_id=$1`,
-      [article_id]
-    )
-    .then((result) => {
-      return result.rows[0];
+  const queryText = `SELECT * FROM articles WHERE article_id=$1`;
+  const queryVals = [article_id];
+  return db.query(queryText, queryVals).then((article) => {
+    if (article.rows.length === 0) {
+      return Promise.reject({
+        status: 400,
+        msg: "Bad request"
+      });
+    } else {
+      return article.rows[0];
+    }
     });
 };
