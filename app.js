@@ -1,15 +1,5 @@
 const express = require("express");
-const {
-  handle500errors,
-  handle404errors,
-  handleCustomErrors,
-  handlePsqlErrors
-} = require("./controllers/controllers.errors");
-const {
-  getTopics,
-  getArticles,
-  getArticlesByArticleID,
-} = require("./controllers/controllers.app");
+const { getTopics, pathInvalid, getArticles } = require("./controllers/controllers");
 const app = express();
 app.use(express.json());
 
@@ -17,11 +7,11 @@ app.get("/api/topics", getTopics);
 
 app.get("/api/articles", getArticles);
 
-app.get("/api/articles/:article_id", getArticlesByArticleID);
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send("Server Error!");
+});
 
-app.all("/*",handle404errors);
-app.use(handleCustomErrors)
-app.use(handlePsqlErrors)
-app.use(handle500errors);
+app.all("*", pathInvalid);
 
 module.exports = app;
