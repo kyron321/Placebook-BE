@@ -72,10 +72,10 @@ describe("GET/api/articles/:article_id", () => {
       });
   });
 
-  test("status 400: invalid data (article_id doesn't exist)", () => {
+  test("status 404: invalid data (article_id doesn't exist)", () => {
     return request(app)
       .get(`/api/articles/627361`)
-      .expect(400)
+      .expect(404)
       .then(({ body }) => {
         expect(body.msg).toEqual("Bad request");
       });
