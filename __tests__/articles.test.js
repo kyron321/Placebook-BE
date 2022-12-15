@@ -98,7 +98,26 @@ describe("GET/api/articles/:article_id/comments", () => {
       .expect(200)
       .then(({ body }) => {
         const comments = body.comments;
-        console.log(comments);
+        comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+  test("responds with a status of 200, returns an array of comments with the corrosponding article_id sorted by the newest comments", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.comments;
+        expect(comments).toBeSortedBy("created_at", { descending: true });
         comments.forEach((comment) => {
           expect(comment.article_id).toBe(1);
           expect(comment).toMatchObject({
@@ -110,6 +129,23 @@ describe("GET/api/articles/:article_id/comments", () => {
             created_at: expect.any(String),
           });
         });
+      });
+  });
+  test("responds with a 404 error when passed a article id which doesnt exist", () => {
+    return request(app)
+      .get("/api/articles/464646/comments")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("Bad request");
+      });
+  });
+
+  test("responds with a 400 error when passed an article id formatted incorrectly", () => {
+    return request(app)
+      .get("/api/articles/incorrectformat/comments")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });

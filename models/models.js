@@ -22,7 +22,9 @@ exports.selectArticles = () => {
 };
 
 exports.selectArticlesByID = (article_id) => {
-  const queryText = `SELECT * FROM articles WHERE article_id=$1`;
+  const queryText = `
+  SELECT * FROM articles 
+  WHERE article_id=$1`;
   const queryVals = [article_id];
   return db.query(queryText, queryVals).then((article) => {
     if (article.rows.length === 0) {
@@ -37,11 +39,17 @@ exports.selectArticlesByID = (article_id) => {
 };
 
 exports.selectCommentsByArticleID = (article_id) => {
-  const queryStr = `SELECT * FROM comments WHERE article_id = $1;`;
+  const queryStr = `
+  SELECT * FROM comments 
+  WHERE article_id = $1
+  ORDER BY created_at DESC;`;
 
   return db.query(queryStr, [article_id]).then((articleComments) => {
     if (articleComments.rows.length === 0) {
-      return Promise.reject({ status: 404, msg: "comment not found!" });
+      return Promise.reject({
+        status: 404,
+        msg: "Bad request",
+      });
     } else {
       return articleComments.rows;
     }
