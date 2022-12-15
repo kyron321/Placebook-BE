@@ -27,7 +27,7 @@ exports.selectArticlesByID = (article_id) => {
   return db.query(queryText, queryVals).then((article) => {
     if (article.rows.length === 0) {
       return Promise.reject({
-        status: 400,
+        status: 404,
         msg: "Bad request"
       });
     } else {
