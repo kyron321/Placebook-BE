@@ -90,3 +90,26 @@ describe("GET/api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET/api/articles/:article_id/comments", () => {
+  test("responds with a status of 200, returns an array of comments with the corrosponding article_id", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body }) => {
+        const comments = body.comments;
+        console.log(comments);
+        comments.forEach((comment) => {
+          expect(comment.article_id).toBe(1);
+          expect(comment).toMatchObject({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+            author: expect.any(String),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+          });
+        });
+      });
+  });
+});
