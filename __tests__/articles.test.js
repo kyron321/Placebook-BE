@@ -7,7 +7,7 @@ require("jest-sorted");
 
 beforeEach(() => seed(testData));
 afterAll(() => {
-  return db.end();
+  db.end();
 });
 
 describe("GET/api/articles", () => {
@@ -146,6 +146,30 @@ describe("GET/api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body }) => {
         expect(body.msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("responds status 201 with an object containing the new comment", () => {
+    const newComment = {
+      username: "icellusedkars",
+      body: "testing post",
+    };
+    return request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body }) => {
+        const {comment} = body
+        expect(comment).toEqual({
+          comment_id: expect.any(Number),
+          body: "testing post",
+          article_id: 1,
+          author: "icellusedkars",
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+        });
       });
   });
 });

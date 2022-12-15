@@ -55,3 +55,16 @@ exports.selectCommentsByArticleID = (article_id) => {
     }
   });
 };
+
+exports.insertComment = (article_id, newComment) => {
+  const { username, body } = newComment;
+
+  let queryStr = `
+  INSERT INTO comments (body, article_id, author) 
+  VALUES ($1, $2, $3) 
+  RETURNING *;`;
+
+  return db.query(queryStr, [body, article_id, username]).then(({ rows }) => {
+    return rows[0];
+  });
+};
