@@ -172,4 +172,17 @@ describe("POST /api/articles/:article_id/comments", () => {
         });
       });
   });
+  test("responds status 404 when passed a valid but not existent article_id value",()=>{
+    const newComment = {
+      username: "icellusedkars",
+      body: "testing post",
+    };
+    return request(app)
+      .post("/api/articles/56456746/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Not found");
+      });
+  })
 });
