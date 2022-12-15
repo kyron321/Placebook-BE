@@ -182,7 +182,22 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(404)
       .then(({ body }) => {
-        expect(body.msg).toBe("Not found");
+        const {msg} = body
+        expect(msg).toBe("Not found");
       });
+  })
+  test("responds status 404 when passed an invalid username",()=>{
+    const newComment = {
+      username: "NotAUser",
+      body: "Im going to make a bad request",
+    };
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(404)
+    .then(({ body }) => {
+      const {msg} = body
+      expect(msg).toBe("Not found");
+    });
   })
 });
