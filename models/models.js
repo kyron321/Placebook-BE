@@ -22,11 +22,11 @@ exports.selectArticles = () => {
 };
 
 exports.selectArticlesByID = (article_id) => {
-  const queryText = `
+  const queryStr = `
   SELECT * FROM articles 
   WHERE article_id=$1`;
   const queryVals = [article_id];
-  return db.query(queryText, queryVals).then((article) => {
+  return db.query(queryStr, queryVals).then((article) => {
     if (article.rows.length === 0) {
       return Promise.reject({
         status: 404,
@@ -39,19 +39,30 @@ exports.selectArticlesByID = (article_id) => {
 };
 
 exports.selectCommentsByArticleID = (article_id) => {
-  const queryStr = `
+  let queryStr = `
   SELECT * FROM comments 
   WHERE article_id = $1
-  ORDER BY created_at DESC;`;
+  ORDER BY created_at DESC;`
 
-  return db.query(queryStr, [article_id]).then((articleComments) => {
-    if (articleComments.rows.length === 0) {
+  return db.query(queryStr, [article_id]).then(({ rows }) => {
+    return rows;
+  });
+};
+
+exports.checkIfArticleIDExists = (article_id) => {
+  const queryStr = `
+    SELECT *
+    FROM articles
+    WHERE article_id = $1;`;
+
+  return db.query(queryStr, [article_id]).then(({ rowCount }) => {
+    if (rowCount === 0) {
       return Promise.reject({
         status: 404,
-        msg: "Bad request",
+        msg: `Bad request`,
       });
     } else {
-      return articleComments.rows;
+      return true;
     }
   });
 };

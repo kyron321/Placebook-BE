@@ -4,6 +4,7 @@ const {
   selectArticlesByID,
   selectCommentsByArticleID,
   insertComment,
+  checkIfArticleIDExists
 } = require("../models/models.js");
 
 exports.getTopics = (req, res, next) => {
@@ -33,9 +34,13 @@ exports.getArticlesByArticleID = (req, res, next) => {
 
 exports.getCommentsByArticleID = (req, res, next) => {
   const { article_id } = req.params;
-  selectCommentsByArticleID(article_id)
-    .then((comments) => {
-      res.status(200).send({ comments });
+  const promises = [
+    selectCommentsByArticleID(article_id),
+    checkIfArticleIDExists(article_id),
+  ];
+  Promise.all(promises)
+    .then(([comments]) => {
+      return res.status(200).send({ comments });
     })
     .catch(next);
 };
