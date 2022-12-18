@@ -194,7 +194,6 @@ describe("GET/api/articles/:article_id/comments", () => {
   });
 });
 
-
 describe("POST /api/articles/:article_id/comments", () => {
   test("responds status 201 with an object containing the new comment", () => {
     const newComment = {
@@ -265,6 +264,45 @@ describe("POST /api/articles/:article_id/comments", () => {
       .then((response) => {
         const msg = response.body.msg;
         expect(msg).toBe("Bad request");
+      });
+  });
+});
+
+describe("PATCH /api/articles/:article_id", () => {
+  test("responds with status 200, returns updated article", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: 2 })
+      .expect(202)
+      .then(({ body }) => {
+        const {article} = body
+        expect(article.votes).toBe(102);
+        expect(article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+        });
+      });
+  });
+  test("responds with a status of 404 when passed a valid but non existent article-id", () => {
+    return request(app)
+      .patch("/api/articles/17263762")
+      .send({ inc_votes: 2 })
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
+      });
+  });
+  test("responds with a status of 400 when passed an inc_votes value of incorrect format", () => {
+    return request(app)
+      .patch("/api/articles/1")
+      .send({ inc_votes: "More" })
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad request");
       });
   });
 });

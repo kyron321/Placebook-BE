@@ -10,7 +10,8 @@ const {
   getArticles,
   getArticlesByArticleID,
   getCommentsByArticleID,
-  postComment
+  postComment,
+  updateArticle
 } = require("./controllers/controllers.app");
 const app = express();
 app.use(express.json());
@@ -24,6 +25,8 @@ app.get("/api/articles/:article_id", getArticlesByArticleID);
 app.get("/api/articles/:article_id/comments", getCommentsByArticleID)
 
 app.post("/api/articles/:article_id/comments", postComment);
+
+app.patch("/api/articles/:article_id", updateArticle);
 
 app.all("*",handle404errors);
 app.use(handleCustomErrors)
