@@ -8,3 +8,12 @@ Inside of your ".env.test" file, you will need setup your database by copy and p
 
 ## Development Env
 Similarly, within your ".env.development" file you will need to add this code: "PGDATABASE=nc_news;"
+
+## Using the API
+The following endpoints are avaliable for this API:
+# GET /api/topics
+# GET /api/articles
+# GET /api/articles/:article_id
+# GET /api/articles/:article_id/comments
+# POST /api/articles/:article_id/comments
+# PATCH /api/articles/:article_id
